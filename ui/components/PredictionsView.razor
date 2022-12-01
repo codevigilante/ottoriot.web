@@ -1,0 +1,63 @@
+﻿<section id="meta">
+    <div class="container">
+        <p class="font-weight-light"><small>current: @Season week @Week</small></p>
+        @if (Model != null)
+        {
+            <p class="font-weight-light"><small>@Model.Updated</small></p>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>pos</th>
+                            <th>name</th>
+                            <th>team</th>
+                            <th>vs</th>
+                            <th>stat</th>
+                            <th>fp</th>
+                            <th>$$$</th>
+                            <th>val</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (PredictionData data in Model.Sorted())
+                        {
+                            <tr>
+                                <td>@data.Position</td>
+                                <td>@data.Name</td>
+                                <td>@data.Team</td>
+                                <td>@data.Vs</td>
+                                <td>@data.Status</td>
+                                <td>@data.FP</td>
+                                <td>@data.Salary</td>
+                                <td>@data.Value</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <p>Fetching projections...</p>
+        }
+    </div>
+</section>
+
+@code
+{
+    [Parameter]
+    public int Season { get; set; }
+    [Parameter]
+    public int Week { get; set; }
+    private PredictionModel Model = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        PredictionsService service = new PredictionsService();
+        Model = await service.Fetch(Season, Week);
+
+        Console.WriteLine($"got model: {Model.Season}.{Model.Week}");
+    }
+
+}
+

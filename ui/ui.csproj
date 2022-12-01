@@ -15,12 +15,18 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="7.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="7.0.0" PrivateAssets="all" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
   </ItemGroup>
 
   <ItemGroup>
     <None Remove="components\" />
+    <None Remove="services\" />
+    <None Remove="Newtonsoft.Json" />
+    <None Remove="services\predictions\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="components\" />
+    <Folder Include="services\" />
+    <Folder Include="services\predictions\" />
   </ItemGroup>
 </Project>
