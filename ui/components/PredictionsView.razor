@@ -4,6 +4,15 @@
         @if (Model != null)
         {
             <p class="font-weight-light"><small>@Model.Updated</small></p>
+            <div class="button-group">
+                <button class="button button-xs" @onclick="() => PositionClick(PositionFilter.ALL)">ALL</button>
+                <button class="button button-xs" @onclick="() => PositionClick(PositionFilter.QB)">QB</button>
+                <button class="button button-xs" @onclick="() => PositionClick(PositionFilter.RB)">RB</button>
+                <button class="button button-xs" @onclick="() => PositionClick(PositionFilter.WR)">WR</button>
+                <button class="button button-xs" @onclick="() => PositionClick(PositionFilter.TE)">TE</button>
+                <button class="button button-xs" @onclick="() => PositionClick(PositionFilter.DST)">DST</button>
+                <button class="button button-xs" @onclick="() => PositionClick(PositionFilter.FLEX)">FLEX</button>
+            </div>
             <div class="table-responsive">
                 <table>
                     <thead>
@@ -19,7 +28,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (PredictionData data in Model.Sorted())
+                        @foreach (PredictionData data in Projections)
                         {
                             <tr>
                                 <td>@data.Position</td>
@@ -50,13 +59,20 @@
     [Parameter]
     public int Week { get; set; }
     private PredictionModel Model = null;
+    private List<PredictionData> Projections = null;
 
     protected override async Task OnInitializedAsync()
     {
         PredictionsService service = new PredictionsService();
         Model = await service.Fetch(Season, Week);
+        Projections = Model.Sorted();
 
         Console.WriteLine($"got model: {Model.Season}.{Model.Week}");
+    }
+
+    private void PositionClick(PositionFilter filter)
+    {
+        Projections = Model.Filter(filter);
     }
 
 }
