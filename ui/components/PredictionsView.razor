@@ -5,13 +5,13 @@
         {
             <p class="font-weight-light"><small>@Model.Updated</small></p>
             <div class="button-group">
-                <button class="button button-xs" @onclick="() => PositionClick(PositionFilter.ALL)">ALL</button>
-                <button class="button button-xs" @onclick="() => PositionClick(PositionFilter.QB)">QB</button>
-                <button class="button button-xs" @onclick="() => PositionClick(PositionFilter.RB)">RB</button>
-                <button class="button button-xs" @onclick="() => PositionClick(PositionFilter.WR)">WR</button>
-                <button class="button button-xs" @onclick="() => PositionClick(PositionFilter.TE)">TE</button>
-                <button class="button button-xs" @onclick="() => PositionClick(PositionFilter.DST)">DST</button>
-                <button class="button button-xs" @onclick="() => PositionClick(PositionFilter.FLEX)">FLEX</button>
+                <button class="button button-xs @(FilterSettings == PositionFilter.ALL ? "button-light" : string.Empty) " @onclick="() => PositionClick(PositionFilter.ALL)">ALL</button>
+                <button class="button button-xs @(FilterSettings == PositionFilter.QB ? "button-light" : string.Empty)" @onclick="() => PositionClick(PositionFilter.QB)">QB</button>
+                <button class="button button-xs @(FilterSettings == PositionFilter.RB ? "button-light" : string.Empty)" @onclick="() => PositionClick(PositionFilter.RB)">RB</button>
+                <button class="button button-xs @(FilterSettings == PositionFilter.WR ? "button-light" : string.Empty)" @onclick="() => PositionClick(PositionFilter.WR)">WR</button>
+                <button class="button button-xs @(FilterSettings == PositionFilter.TE ? "button-light" : string.Empty)" @onclick="() => PositionClick(PositionFilter.TE)">TE</button>
+                <button class="button button-xs @(FilterSettings == PositionFilter.DST ? "button-light" : string.Empty)" @onclick="() => PositionClick(PositionFilter.DST)">DST</button>
+                <button class="button button-xs @(FilterSettings == PositionFilter.FLEX ? "button-light" : string.Empty)" @onclick="() => PositionClick(PositionFilter.FLEX)">FLEX</button>
             </div>
             <div class="table-responsive">
                 <table>
@@ -60,6 +60,7 @@
     public int Week { get; set; }
     private PredictionModel Model = null;
     private List<PredictionData> Projections = null;
+    private PositionFilter FilterSettings = PositionFilter.ALL;
 
     protected override async Task OnInitializedAsync()
     {
@@ -73,6 +74,7 @@
     private void PositionClick(PositionFilter filter)
     {
         Projections = Model.Filter(filter);
+        FilterSettings = filter;
     }
 
 }
