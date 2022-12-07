@@ -35,8 +35,6 @@ namespace ui.services.predictions
 
         public List<PredictionData> Filter(PositionFilter position)
         {
-            string pos = string.Empty;
-
             switch(position)
             {
                 case PositionFilter.QB:
@@ -54,6 +52,22 @@ namespace ui.services.predictions
                 case PositionFilter.ALL:
                 default:
                     return (Sorted());
+            }
+        }
+
+        public List<PredictionData> Filter(PositionFilter position, SortBy sort)
+        {
+            List<PredictionData> data = Filter(position);
+
+            switch (sort)
+            {
+                case SortBy.Salary:
+                    return (data.OrderByDescending(p => p.Salary).ToList());
+                case SortBy.Value:
+                    return (data.OrderByDescending(p => p.Value).ToList());
+                case SortBy.FP:
+                default:
+                    return (data.OrderByDescending(p => p.FP).ToList());
             }
         }
     }

@@ -1,49 +1,56 @@
 ﻿<section id="meta">
-    <div class="container">
-        <p class="font-weight-light"><small>current: @Season week @Week</small></p>
+    <div class="container grid-lg">
+        <div class="">
+            <small class="chip">current: @Season week @Week</small>
+            @if (Model == null)
+            {
+                <small class="chip">fetching...</small>
+            }
+            else
+            {
+                <small class="chip">@Model.Updated</small>
+            }
+        </div>
         @if (Model != null)
         {
-            <p class="font-weight-light"><small>@Model.Updated</small></p>
-            <div class="button-group">
-                <button class="button button-xs @(FilterSettings == PositionFilter.ALL ? "button-light" : string.Empty) " @onclick="() => PositionClick(PositionFilter.ALL)">ALL</button>
-                <button class="button button-xs @(FilterSettings == PositionFilter.QB ? "button-light" : string.Empty)" @onclick="() => PositionClick(PositionFilter.QB)">QB</button>
-                <button class="button button-xs @(FilterSettings == PositionFilter.RB ? "button-light" : string.Empty)" @onclick="() => PositionClick(PositionFilter.RB)">RB</button>
-                <button class="button button-xs @(FilterSettings == PositionFilter.WR ? "button-light" : string.Empty)" @onclick="() => PositionClick(PositionFilter.WR)">WR</button>
-                <button class="button button-xs @(FilterSettings == PositionFilter.TE ? "button-light" : string.Empty)" @onclick="() => PositionClick(PositionFilter.TE)">TE</button>
-                <button class="button button-xs @(FilterSettings == PositionFilter.DST ? "button-light" : string.Empty)" @onclick="() => PositionClick(PositionFilter.DST)">DST</button>
-                <button class="button button-xs @(FilterSettings == PositionFilter.FLEX ? "button-light" : string.Empty)" @onclick="() => PositionClick(PositionFilter.FLEX)">FLEX</button>
+            <div class="btn-group column mt-2">
+                <button class="btn btn-sm @(FilterSettings == PositionFilter.ALL ? "btn-primary" : string.Empty) " @onclick="() => PositionClick(PositionFilter.ALL)">ALL</button>
+                <button class="btn btn-sm @(FilterSettings == PositionFilter.QB ? "btn-primary" : string.Empty)" @onclick="() => PositionClick(PositionFilter.QB)">QB</button>
+                <button class="btn btn-sm @(FilterSettings == PositionFilter.RB ? "btn-primary" : string.Empty)" @onclick="() => PositionClick(PositionFilter.RB)">RB</button>
+                <button class="btn btn-sm @(FilterSettings == PositionFilter.WR ? "btn-primary" : string.Empty)" @onclick="() => PositionClick(PositionFilter.WR)">WR</button>
+                <button class="btn btn-sm @(FilterSettings == PositionFilter.TE ? "btn-primary" : string.Empty)" @onclick="() => PositionClick(PositionFilter.TE)">TE</button>
+                <button class="btn btn-sm @(FilterSettings == PositionFilter.DST ? "btn-primary" : string.Empty)" @onclick="() => PositionClick(PositionFilter.DST)">DST</button>
+                <button class="btn btn-sm @(FilterSettings == PositionFilter.FLEX ? "btn-primary" : string.Empty)" @onclick="() => PositionClick(PositionFilter.FLEX)">FLEX</button>
             </div>
-            <div class="table-responsive">
-                <table>
-                    <thead>
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>pos</th>
+                        <th>name</th>
+                        <th>team</th>
+                        <th>vs</th>
+                        <th>stat</th>
+                        <th><button class="btn btn-sm @(SortSettings == SortBy.FP ? "btn-primary" : string.Empty)" @onclick="() => SortByClick(SortBy.FP)">fp</button></th>
+                        <th><button class="btn btn-sm @(SortSettings == SortBy.Salary ? "btn-primary" : string.Empty)" @onclick="() => SortByClick(SortBy.Salary)">$$$</button></th>
+                        <th><button class="btn btn-sm @(SortSettings == SortBy.Value ? "btn-primary" : string.Empty)" @onclick="() => SortByClick(SortBy.Value)">val</button></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (PredictionData data in Projections)
+                    {
                         <tr>
-                            <th>pos</th>
-                            <th>name</th>
-                            <th>team</th>
-                            <th>vs</th>
-                            <th>stat</th>
-                            <th>fp</th>
-                            <th>$$$</th>
-                            <th>val</th>
+                            <td>@data.Position</td>
+                            <td>@data.Name</td>
+                            <td>@data.Team</td>
+                            <td>@data.Vs</td>
+                            <td>@data.Status</td>
+                            <td>@data.FP</td>
+                            <td>@data.Salary</td>
+                            <td>@data.Value</td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (PredictionData data in Projections)
-                        {
-                            <tr>
-                                <td>@data.Position</td>
-                                <td>@data.Name</td>
-                                <td>@data.Team</td>
-                                <td>@data.Vs</td>
-                                <td>@data.Status</td>
-                                <td>@data.FP</td>
-                                <td>@data.Salary</td>
-                                <td>@data.Value</td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
+                    }
+                </tbody>
+            </table>
         }
         else
         {
@@ -61,6 +68,7 @@
     private PredictionModel Model = null;
     private List<PredictionData> Projections = null;
     private PositionFilter FilterSettings = PositionFilter.ALL;
+    private SortBy SortSettings = SortBy.FP;
 
     protected override async Task OnInitializedAsync()
     {
@@ -73,8 +81,14 @@
 
     private void PositionClick(PositionFilter filter)
     {
-        Projections = Model.Filter(filter);
+        Projections = Model.Filter(filter, SortSettings);
         FilterSettings = filter;
+    }
+
+    private void SortByClick(SortBy sort)
+    {
+        Projections = Model.Filter(FilterSettings, sort);
+        SortSettings = sort;
     }
 
 }
