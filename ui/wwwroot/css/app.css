@@ -9,6 +9,10 @@ button:focus {
     font-family:Courier, monospace;
 }
 
+.text-strikethrough {
+    text-decoration:line-through;
+}
+
 .btn {
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -79,6 +83,17 @@ button:focus {
 .btn.btn-primary.loading::after {
     border-bottom-color: #fff;
     border-left-color: #fff
+}
+
+.btn.btn-link {
+    background: 0 0;
+    border-color: transparent;
+    border-bottom:1px solid black;
+    color: #5f5f5f;
+}
+
+.btn.btn-link.active, .btn.btn-link:active, .btn.btn-link:focus, .btn.btn-link:hover {
+    color: #010101;
 }
 
 #blazor-error-ui {

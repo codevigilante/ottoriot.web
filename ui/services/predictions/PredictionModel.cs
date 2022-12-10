@@ -4,6 +4,14 @@ namespace ui.services.predictions
 {
     public enum SortBy { FP, Value, Salary }
     public enum PositionFilter { ALL, QB, RB, WR, TE, DST, FLEX }
+    public enum GameDayFilter { All, Thu, Sat, Sun, Mon }
+    public enum TimeSlotFilter { All, AM, Noon, PM, Late }
+
+    public class AvailableSlate
+    {
+        public string Day { get; set; }
+        public string Time { get; set; }
+    }
 
 	public class PredictionData
 	{
@@ -18,7 +26,7 @@ namespace ui.services.predictions
         public string Status { get; set; }
         public double Salary { get; set; }
         public double Value { get; set; }
-        //public double BigGameProb { get; set; }
+        public DateTime GameTime { get; set; }
     }
 
 	public class PredictionModel
@@ -26,6 +34,7 @@ namespace ui.services.predictions
 		public int Season { get; set; }
         public int Week { get; set; }
         public DateTime Updated { get; set; }
+        public List<AvailableSlate> Slates { get; set; } = new List<AvailableSlate>();
         public List<PredictionData> Projections { get; set; } = new List<PredictionData>();
 
         public List<PredictionData> Sorted()

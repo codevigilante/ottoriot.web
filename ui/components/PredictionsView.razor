@@ -22,31 +22,37 @@
                 <button class="btn btn-sm @(FilterSettings == PositionFilter.DST ? "btn-primary" : string.Empty)" @onclick="() => PositionClick(PositionFilter.DST)">DST</button>
                 <button class="btn btn-sm @(FilterSettings == PositionFilter.FLEX ? "btn-primary" : string.Empty)" @onclick="() => PositionClick(PositionFilter.FLEX)">FLEX</button>
             </div>
-            <table class="table table-striped table-hover">
+            <!--
+            <div class="btn-group column mt-2">
+                @foreach(AvailableSlate slate in Model.Slates)
+                {
+                    <button class="btn btn-sm">@slate.Day &raquo; @slate.Time</button>
+                }
+            </div>
+                -->
+            <table class="table table-hover">
                 <thead>
                     <tr>
-                        <th>pos</th>
-                        <th>name</th>
-                        <th>team</th>
-                        <th>vs</th>
-                        <th>stat</th>
-                        <th><button class="btn btn-sm @(SortSettings == SortBy.FP ? "btn-primary" : string.Empty)" @onclick="() => SortByClick(SortBy.FP)">fp</button></th>
-                        <th><button class="btn btn-sm @(SortSettings == SortBy.Salary ? "btn-primary" : string.Empty)" @onclick="() => SortByClick(SortBy.Salary)">$$$</button></th>
-                        <th><button class="btn btn-sm @(SortSettings == SortBy.Value ? "btn-primary" : string.Empty)" @onclick="() => SortByClick(SortBy.Value)">val</button></th>
+                        <th>rnk</th>
+                        <th>player</th>
+                        <th>vs</th>        
+                        <th><button class="btn btn-sm tooltip @(SortSettings == SortBy.FP ? "btn-primary" : string.Empty)" @onclick="() => SortByClick(SortBy.FP)" data-tooltip="projected fantasy points">fp</button></th>
+                        <th><button class="btn btn-sm tooltip @(SortSettings == SortBy.Salary ? "btn-primary" : string.Empty)" @onclick="() => SortByClick(SortBy.Salary)" data-tooltip="Yahoo salary">$$$</button></th>
+                        <th><button class="btn btn-sm tooltip @(SortSettings == SortBy.Value ? "btn-primary" : string.Empty)" @onclick="() => SortByClick(SortBy.Value)" data-tooltip="DFS value">val</button></th>
+                        <th><span class="tooltip" data-tooltip="game time, Central Daylight Time">CDT</span></th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach (PredictionData data in Projections)
                     {
-                        <tr>
-                            <td>@data.Position</td>
-                            <td>@data.Name</td>
-                            <td>@data.Team</td>
-                            <td>@data.Vs</td>
-                            <td>@data.Status</td>
+                        <tr class="@(data.GameTime >= DateTime.Now ? string.Empty : "text-strikethrough")">
+                            <td>@(num++)</td>
+                            <td>@data.Name<br /><span class="text-tiny text-muted">@data.Position &bull; @data.Team &bull; <span class="text-error text-bold">@data.Status</span></span></td>
+                            <td><span class="text-tiny">@data.Vs</span></td>
                             <td>@data.FP</td>
                             <td>@data.Salary</td>
                             <td>@data.Value</td>
+                            <td><span class="text-tiny">@data.GameTime.ToString("ddd, HH:mm")</span></td>
                         </tr>
                     }
                 </tbody>
@@ -69,6 +75,7 @@
     private List<PredictionData> Projections = null;
     private PositionFilter FilterSettings = PositionFilter.ALL;
     private SortBy SortSettings = SortBy.FP;
+    private int num = 1;
 
     protected override async Task OnInitializedAsync()
     {
@@ -83,12 +90,14 @@
     {
         Projections = Model.Filter(filter, SortSettings);
         FilterSettings = filter;
+        num = 1;
     }
 
     private void SortByClick(SortBy sort)
     {
         Projections = Model.Filter(FilterSettings, sort);
         SortSettings = sort;
+        num = 1;
     }
 
 }
