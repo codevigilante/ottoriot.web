@@ -3,7 +3,7 @@ using Newtonsoft.Json.Linq;
 namespace ui.services.predictions
 {
     public enum SortBy { FP, Value, Salary }
-    public enum PositionFilter { ALL, QB, RB, WR, TE, DST, FLEX }
+    public enum PositionFilter { QB, RB, WR, TE, DST, FLEX }
     public enum GameDayFilter { All, Thu, Sat, Sun, Mon }
     public enum TimeSlotFilter { All, AM, Noon, PM, Late }
 
@@ -37,17 +37,10 @@ namespace ui.services.predictions
         public List<AvailableSlate> Slates { get; set; } = new List<AvailableSlate>();
         public List<PredictionData> Projections { get; set; } = new List<PredictionData>();
 
-        public List<PredictionData> Sorted()
-        {
-            return (Projections.OrderByDescending(p => p.FP).ToList());
-        }
-
         public List<PredictionData> Filter(PositionFilter position)
         {
             switch(position)
-            {
-                case PositionFilter.QB:
-                    return (Projections.Where(p => p.Position == "QB").OrderByDescending(p => p.FP).ToList());
+            {                    
                 case PositionFilter.RB:
                     return (Projections.Where(p => p.Position == "RB").OrderByDescending(p => p.FP).ToList());
                 case PositionFilter.WR:
@@ -58,9 +51,9 @@ namespace ui.services.predictions
                     return (Projections.Where(p => p.Position == "DST").OrderByDescending(p => p.FP).ToList());
                 case PositionFilter.FLEX:
                     return (Projections.Where(p => p.Position == "RB" || p.Position == "WR" || p.Position == "TE").OrderByDescending(p => p.FP).ToList());
-                case PositionFilter.ALL:
+                case PositionFilter.QB:
                 default:
-                    return (Sorted());
+                    return (Projections.Where(p => p.Position == "QB").OrderByDescending(p => p.FP).ToList());
             }
         }
 
