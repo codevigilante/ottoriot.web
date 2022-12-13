@@ -2,7 +2,7 @@
 using Newtonsoft.Json.Linq;
 namespace ui.services.predictions
 {
-    public enum SortBy { FP, Value, Salary }
+    public enum SortBy { FP, Value, Salary, Matchup }
     public enum PositionFilter { QB, RB, WR, TE, DST, FLEX }
     public enum GameDayFilter { All, Thu, Sat, Sun, Mon }
     public enum TimeSlotFilter { All, AM, Noon, PM, Late }
@@ -27,6 +27,7 @@ namespace ui.services.predictions
         public double Salary { get; set; }
         public double Value { get; set; }
         public DateTime GameTime { get; set; }
+        public double Matchup { get; set; }
     }
 
 	public class PredictionModel
@@ -67,6 +68,8 @@ namespace ui.services.predictions
                     return (data.OrderByDescending(p => p.Salary).ToList());
                 case SortBy.Value:
                     return (data.OrderByDescending(p => p.Value).ToList());
+                case SortBy.Matchup:
+                    return (data.OrderByDescending(p => p.Matchup).ThenByDescending(p => p.FP).ToList());
                 case SortBy.FP:
                 default:
                     return (data.OrderByDescending(p => p.FP).ToList());

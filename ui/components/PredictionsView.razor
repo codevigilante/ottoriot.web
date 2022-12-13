@@ -34,10 +34,11 @@
                     <tr>
                         <th>rnk</th>
                         <th>player</th>
-                        <th>vs</th>        
+                        <th>vs</th>
                         <th><button class="btn btn-sm tooltip @(SortSettings == SortBy.FP ? "btn-primary" : string.Empty)" @onclick="() => SortByClick(SortBy.FP)" data-tooltip="projected fantasy points">fp</button></th>
                         <th><button class="btn btn-sm tooltip @(SortSettings == SortBy.Salary ? "btn-primary" : string.Empty)" @onclick="() => SortByClick(SortBy.Salary)" data-tooltip="Yahoo salary">$$$</button></th>
                         <th><button class="btn btn-sm tooltip @(SortSettings == SortBy.Value ? "btn-primary" : string.Empty)" @onclick="() => SortByClick(SortBy.Value)" data-tooltip="DFS value">val</button></th>
+                        <th><button class="btn btn-sm tooltip @(SortSettings == SortBy.Matchup ? "btn-primary" : string.Empty)" @onclick="() => SortByClick(SortBy.Matchup)" data-tooltip="matchup score">m/u</button></th>
                         <th><span class="tooltip" data-tooltip="game time, Central Daylight Time">CDT</span></th>
                     </tr>
                 </thead>
@@ -55,13 +56,23 @@
                                 <span class="text-tiny text-muted">@data.Team</span>
                                 @if (!String.IsNullOrEmpty(@data.Status.Trim()))
                                 {
-                                    <span class="text-tiny text-muted"> &bull; <span class="text-error text-bold">@data.Status</span></span>                                    
+                                    <span class="text-tiny text-muted"> &bull; <span class="text-error text-bold">@data.Status</span></span>
                                 }
                             </td>
                             <td><span class="text-tiny">@data.Vs</span></td>
                             <td>@data.FP</td>
                             <td>@data.Salary</td>
                             <td>@data.Value</td>
+                            <td>
+                                @if(data.Matchup > 0)
+                                {
+                                    <span class="label label-success">@data.Matchup</span>
+                                }
+                                else
+                                {
+                                    <span class="label label-error">@data.Matchup</span>
+                                }
+                            </td>
                             <td><span class="text-tiny">@data.GameTime.ToString("ddd, HH:mm")</span></td>
                         </tr>
                     }
