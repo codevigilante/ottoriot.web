@@ -23,10 +23,12 @@
     <None Remove="services\" />
     <None Remove="Newtonsoft.Json" />
     <None Remove="services\predictions\" />
+    <None Remove="services\odds\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="components\" />
     <Folder Include="services\" />
     <Folder Include="services\predictions\" />
+    <Folder Include="services\odds\" />
   </ItemGroup>
 </Project>
