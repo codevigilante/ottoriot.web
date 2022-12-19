@@ -1,4 +1,5 @@
 ﻿using System;
+using models;
 
 namespace ui.services.predictions
 {

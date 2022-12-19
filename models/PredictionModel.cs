@@ -1,6 +1,6 @@
 ﻿using System;
-using Newtonsoft.Json.Linq;
-namespace ui.services.predictions
+
+namespace models
 {
     public enum SortBy { FP, Value, Salary, Matchup }
     public enum PositionFilter { QB, RB, WR, TE, DST, FLEX }
@@ -74,6 +74,15 @@ namespace ui.services.predictions
                 default:
                     return (data.OrderByDescending(p => p.FP).ToList());
             }
+        }
+
+        public List<PredictionData> FilterOnlyPlayed(PositionFilter position, SortBy sort)
+        {
+            List<PredictionData> played = Filter(position, sort);
+
+            played = played.Where(p => p.GameTime >= DateTime.Now).ToList();
+
+            return (played);
         }
     }
 }

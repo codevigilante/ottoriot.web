@@ -1,7 +1,6 @@
 ﻿using System;
-using ui.services.predictions;
 
-namespace ui.services.odds
+namespace models
 {
     public class OddsData
     {

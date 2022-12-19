@@ -1,5 +1,6 @@
 ﻿using System;
 using ui.services.predictions;
+using models;
 
 namespace ui.services.odds
 {

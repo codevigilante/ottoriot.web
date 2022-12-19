@@ -31,4 +31,9 @@
     <Folder Include="services\predictions\" />
     <Folder Include="services\odds\" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\models\models.csproj">
+      <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
+    </ProjectReference>
+  </ItemGroup>
 </Project>
