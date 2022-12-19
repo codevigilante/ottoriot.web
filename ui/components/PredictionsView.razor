@@ -40,6 +40,7 @@
                         <th><button class="btn btn-sm tooltip @(SortSettings == SortBy.Salary ? "btn-primary" : string.Empty)" @onclick="() => SortByClick(SortBy.Salary)" data-tooltip="Yahoo salary">$$$</button></th>
                         <th><button class="btn btn-sm tooltip @(SortSettings == SortBy.Value ? "btn-primary" : string.Empty)" @onclick="() => SortByClick(SortBy.Value)" data-tooltip="DFS value">val</button></th>
                         <th><button class="btn btn-sm tooltip @(SortSettings == SortBy.Matchup ? "btn-primary" : string.Empty)" @onclick="() => SortByClick(SortBy.Matchup)" data-tooltip="matchup score">m/u</button></th>
+                        <th><span class="tooltip" data-tooltip="big game probability, naive">bgp</span></th>
                         <th><span class="tooltip" data-tooltip="game time, Central Daylight Time">CDT</span></th>
                     </tr>
                 </thead>
@@ -76,6 +77,7 @@
                                         <span class="label label-error">@data.Matchup</span>
                                         }
                                 </td>
+                                <td><span class="text-tiny">@data.BGP</span></td>
                                 <td><span class="text-tiny">@data.GameTime.ToString("ddd, HH:mm")</span></td>
                             </tr>
                         }

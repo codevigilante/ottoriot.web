@@ -28,6 +28,7 @@ namespace models
         public double Value { get; set; }
         public DateTime GameTime { get; set; }
         public double Matchup { get; set; }
+        public double BGP { get; set; }
     }
 
 	public class PredictionModel
