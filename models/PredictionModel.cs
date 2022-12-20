@@ -19,9 +19,6 @@ namespace models
         public string Position { get; set; }
         public string Team { get; set; }
         public string Vs { get; set; }
-        public double Workload { get; set; }
-        public string WorkloadTag { get; set; }
-        public double TPG { get; set; }
         public double FP { get; set; }
         public string Status { get; set; }
         public double Salary { get; set; }
