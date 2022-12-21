@@ -1,5 +1,16 @@
 ﻿@page "/"
+@inject MetaService Meta
 
-<PredictionsView Season="2022" Week="15" />
+@if (@Model != null)
+{
+    <PredictionsView Season="@Model.Season" Week="@Model.Week" />
+}
 
+@code {
+    private MetaModel Model = null;
 
+    protected override async Task OnInitializedAsync()
+    {
+        Model = await Meta.Fetch();
+    }
+}
