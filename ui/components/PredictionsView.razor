@@ -59,7 +59,7 @@
                                         <span class="text-tiny text-muted">@data.Position &bull; </span>
                                         }
                                     <span class="text-tiny text-muted">@data.Team</span>
-                                    @if (!String.IsNullOrEmpty(@data.Status.Trim()))
+                                    @if (data.Status != null && !String.IsNullOrEmpty(@data.Status.Trim()))
                                         {
                                         <span class="text-tiny text-muted"> &bull; <span class="text-error text-bold">@data.Status</span></span>
                                         }
