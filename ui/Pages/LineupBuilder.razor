@@ -1,0 +1,22 @@
+﻿@page "/lineup-optimizer"
+@inject MetaService Meta
+
+<div class="container grid-lg">
+    <h1><small>lineup optimizer</small></h1>
+
+    @if (MetaData != null)
+    {
+        <small class="chip">current: @MetaData.Season week @MetaData.Week</small>
+    }
+</div>
+
+@code
+{
+    private MetaModel MetaData = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        MetaData = await Meta.Fetch();
+    }
+}
+

@@ -1,16 +1,10 @@
 ﻿@page "/"
-@inject MetaService Meta
 
-@if (@Model != null)
-{
-    <PredictionsView Season="@Model.Season" Week="@Model.Week" />
-}
+<hgroup>
+    <h1>build better lineups, faster</h1>
+    <h3>projections, metrics, and strategy for fantasy football</h3>
+</hgroup>
+
 
 @code {
-    private MetaModel Model = null;
-
-    protected override async Task OnInitializedAsync()
-    {
-        Model = await Meta.Fetch();
-    }
 }

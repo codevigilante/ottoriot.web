@@ -1,11 +1,39 @@
-﻿<header class="bg-dark text-secondary py-1 mb-3">
-    <div class="container grid-lg">
-        <a class="text-light mr-3" href="/">ottoriot</a>
-        <a class="text-light mr-2" href="/game-odds">odds</a>
-     </div>
+﻿@inject NavigationManager UriHelper
+
+<header>
+    <nav class="thin">
+        <ul>
+            <li><strong><a href="/" class="brand">ottoriot</a></strong></li>
+        </ul>
+        <ul>
+            <li>
+                <details role="list" dir="rtl" open="@IsOpen">
+                    <summary aria-haspopup="listbox" role="button" class="contrast">
+                        hello
+                    </summary>
+                    <ul role="listbox">
+                        <li><a @onclick="ProjectionsClick">projections</a></li>
+                        <li><a @onclick="OddsCLick">odds</a></li>
+                    </ul>
+                </details>
+            </li>
+        </ul>
+    </nav>
 </header>
 
 @code {
+    private bool IsOpen { get; set; } = false;
 
+    private void ProjectionsClick()
+    {
+        IsOpen = false;
+        UriHelper.NavigateTo("projections");
+    }
+
+    private void OddsCLick()
+    {
+        IsOpen = false;
+        UriHelper.NavigateTo("game-odds");
+    }
 }
 

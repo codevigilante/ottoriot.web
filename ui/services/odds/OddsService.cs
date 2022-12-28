@@ -4,7 +4,7 @@ using models;
 
 namespace ui.services.odds
 {
-	public class OddsService : ServiceBase
+	public class OddsService : ServiceBase<OddsModel>
 	{
         private static readonly string EndpointBase = "https://ottoriot.blob.core.windows.net/odds";
 
@@ -12,10 +12,11 @@ namespace ui.services.odds
         {
         }
 
-        public async Task<OddsModel> Fetch(int season, int week)
+        public async Task<OddsModel?> Fetch(int season, int week)
         {
+
             string endpoint = $"{EndpointBase}/{season}/odds_w{week}.json";
-            OddsModel model = await base.Fetch<OddsModel>(endpoint);
+            OddsModel? model = await base.Fetch(endpoint);
 
             return (model);
         }

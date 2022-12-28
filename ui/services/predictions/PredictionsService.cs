@@ -3,7 +3,7 @@ using models;
 
 namespace ui.services.predictions
 {
-	public class PredictionsService : ServiceBase
+	public class PredictionsService : ServiceBase<PredictionModel>
 	{
         private static readonly string EndpointBase = "https://ottoriot.blob.core.windows.net/predictions";
 
@@ -11,10 +11,10 @@ namespace ui.services.predictions
 		{
 		}
 
-		public async Task<PredictionModel> Fetch(int season, int week)
+		public async Task<PredictionModel?> Fetch(int season, int week)
 		{
             string endpoint = $"{EndpointBase}/{season}/pred_w{week}.json";
-            PredictionModel model = await base.Fetch<PredictionModel>(endpoint);
+            PredictionModel? model = await base.Fetch(endpoint);
             
             return (model);
         }

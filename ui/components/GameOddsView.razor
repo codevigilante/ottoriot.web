@@ -1,19 +1,12 @@
-﻿<section id="meta">
-    <div class="container grid-lg">
-        <div class="">
-            <small class="chip">current: @Season week @Week</small>
-            @if (Model == null)
-            {
-                <small class="chip">fetching...</small>
-            }
-            else
-            {
-                <small class="chip">@Model.Updated</small>
-            }
-        </div>
-        @if (Model != null)
-        {
-            <table class="table table-hover">
+﻿@inject OddsService OService
+
+<section id="meta">
+    
+    @if (Model != null)
+    {
+        <small>@Model.Updated</small>
+        <figure>
+            <table>
                 <thead>
                     <tr>
                         <th>home</th>
@@ -29,25 +22,28 @@
                 <tbody>
                     @foreach (OddsData data in Games)
                     {
-                        <tr class="@(data.GameTime >= DateTime.Now ? string.Empty : "text-strikethrough")">
-                            <td>@data.Home</td>
-                            <td>@data.HomeSpread</td>
-                            <td>@data.HomeITT</td>
-                            <td>@data.Away</td>
-                            <td>@data.AwaySpread</td>
-                            <td>@data.AwayITT</td>
-                            <td>@data.OverUnder</td>
-                            <td><span class="text-tiny">@data.GameTime.ToString("ddd, HH:mm")</span></td>
-                        </tr>
+                        @if (data.GameTime >= DateTime.Now)
+                        {
+                            <tr>
+                                <td>@data.Home</td>
+                                <td>@data.HomeSpread</td>
+                                <td>@data.HomeITT</td>
+                                <td>@data.Away</td>
+                                <td>@data.AwaySpread</td>
+                                <td>@data.AwayITT</td>
+                                <td>@data.OverUnder</td>
+                                <td><small>@data.GameTime.ToString("ddd, HH:mm")</small></td>
+                            </tr>
+                        }
                     }
                 </tbody>
             </table>
-        }
-        else
-        {
-            <p>fetching game odds...</p>
-        }
-    </div>
+        </figure>
+    }
+    else
+    {
+        <a href="#" aria-busy="true">working on it...</a>
+    }
 </section>
 
 @code
@@ -61,8 +57,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        OddsService service = new OddsService();
-        Model = await service.Fetch(Season, Week);
+        Model = await OService.Fetch(Season, Week);
         Games = Model.SortByDate();
     }
 }

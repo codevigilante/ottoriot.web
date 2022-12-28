@@ -1,17 +1,17 @@
-﻿@page "/game-odds"
+﻿@page "/projections"
 @inject MetaService Meta
 
 <hgroup>
-    <h1>pro football game odds</h1>
-    @if (Model != null)
+    <h1>fantasy football projections</h1>
+    @if(Model != null)
     {
         <h3>@Model.Season week @Model.Week</h3>
     }
 </hgroup>
 
-@if (Model != null)
+@if (@Model != null)
 {
-    <GameOddsView Season="@Model.Season" Week="@Model.Week" />
+    <PredictionsView Season="@Model.Season" Week="@Model.Week" />
 }
 
 @code {
@@ -20,8 +20,6 @@
     protected override async Task OnInitializedAsync()
     {
         Model = await Meta.Fetch();
-
-        Console.WriteLine($"dingus {Model}");
     }
 }
 
