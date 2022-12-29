@@ -1,32 +1,34 @@
 ﻿@page "/lineup-optimizer"
 @inject MetaService Meta
 @inject OddsService OService
+@inject PredictionsService PService
 
 @if (Model != null)
 {
     <Headline Title="lineup optimizer" Season="@Model.Season" Week="@Model.Week" />
 
-    @if (Games != null)
+    @if (CheckboxModels != null)
     {
         <div class="grid">
             <div>
                 <details role="list">
-                    <summary aria-haspopup="listbox">games</summary>
+                    <summary aria-haspopup="listbox">start times</summary>
                     <ul role="listbox">
-                        @foreach (OddsData o in Games)
+                        @foreach (GameTimeCheckboxModel cb in CheckboxModels)
                         {
-                            @if (o.GameTime >= DateTime.Now)
+                            @if (cb.GameTime.Start >= DateTime.Now)
                             {
                                 <li>
                                     <label>
-                                        <input type="checkbox" checked>
-                                        @o.Home v @o.Away (@o.GameTime.ToString("ddd, HH:mm"))
+                                        <input type="checkbox" checked="@cb.Selected" @onchange="() => StartTimeClicked(cb)">
+                                        @cb.GameTime.Start.ToString("ddd, HH:mm")) @cb.GameTime.NumGames @(cb.GameTime.NumGames > 1 ? "games" : "game")
                                     </label>
                                 </li>
                             }
                         }
                     </ul>
                 </details>
+                <small>@SelectedTimes.Sum(g => g.NumGames) games selected</small>
                 <nav aria-label="breadcrumb">
                     <ul>
                         <li><a href="" class="@(FilterSettings == PositionFilter.QB ? "selected" : string.Empty)" @onclick="() => PositionClick(PositionFilter.QB)" @onclick:preventDefault>QB</a></li>
@@ -39,75 +41,178 @@
                 </nav>
             </div>
             <div>
-                <table class="small-txt">
-                    <thead>
-                        <tr>
-                            <th><small>slot</small></th>
-                            <th><small>player</small></th>
-                            <th><small>$$</small></th>
-                            <th><small>fp</small></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>QB</td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td>RB</td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td>RB</td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td>WR</td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td>WR</td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td>WR</td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td>TE</td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td>FLEX</td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td>DST</td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                    </tbody>
-                </table>
-                <button class="contrast">optimize</button>
+                @if (SelectedTimes.Sum(t => t.NumGames) > 1)
+                {
+                    <table class="small-txt">
+                        <thead>
+                            <tr>
+                                <th><small>slot</small></th>
+                                <th><small>player</small></th>
+                                <th><small>$$</small></th>
+                                <th><small>fp</small></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>QB</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>RB</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>RB</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>WR</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>WR</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>WR</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>TE</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>FLEX</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>DST</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                }
+                else if (SelectedTimes.Sum(t => t.NumGames) == 1)
+                {
+                    <table class="small-txt">
+                        <thead>
+                            <tr>
+                                <th><small>slot</small></th>
+                                <th><small>player</small></th>
+                                <th><small>$$</small></th>
+                                <th><small>fp</small></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>SUPER</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>FLEX</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>FLEX</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>FLEX</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>FLEX</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                }
+                <a href="#" role="button" class="contrast">optimize</a>
+                <a href="#" role="button" class="contrast outline">save</a>
             </div>
         </div>
+    }
+
+    @if(Projections != null)
+    {
+        <hr/>
+        <figure>
+            <table>
+                <thead>
+                    <tr>
+                        <th><small>act</small></th>
+                        <th><small>player</small></th>
+                        <th><small>itt</small></th>
+                        <th><small>fp</small></th>
+                        <th><small>$$</small></th>
+                        <th><small>val</small></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach(PredictionData data in Projections)
+                    {
+                        <tr>
+                            <td>
+                                <a href="#" class="contrast smaller" role="button" @onclick:preventDefault>+</a>
+                                <a href="#" class="contrast smaller" role="button" @onclick:preventDefault>-</a>
+                            </td>
+                            <td>
+                                @data.Name <br />
+                                <small>@data.Position &bull; @data.Team &bull; <span class="@(data.Matchup > 0 ? "success" : "error")">@data.Matchup</span> &bull; @data.GameTime.ToString("ddd, HH:mm")</small>
+                            </td>
+                            <td>@GetITT(data.Team)</td>
+                            <td>@data.FP</td>
+                            <td>@data.Salary</td>
+                            <td>@data.Value</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </figure>
     }
 }
 else
@@ -119,8 +224,12 @@ else
 {
     private MetaModel? Model = null;
     private OddsModel? Odds = null;
-    private List<OddsData> Games = null;
+    private List<StartTimes>? GameTimes = null;
     private PositionFilter FilterSettings = PositionFilter.QB;
+    private PredictionModel? PredictionModel = null;
+    private List<PredictionData>? Projections = null;
+    private List<GameTimeCheckboxModel> CheckboxModels = null;
+    private List<StartTimes> SelectedTimes = new List<StartTimes>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -129,16 +238,66 @@ else
         if (Model != null)
         {
             Odds = await OService.Fetch(Model.Season, Model.Week);
-            Games = Odds?.SortByDate();
+            GameTimes = Odds?.FilterStartTimes();
+            CheckboxModels = new List<GameTimeCheckboxModel>();
+
+            foreach(StartTimes game in GameTimes)
+            {
+                CheckboxModels.Add(new GameTimeCheckboxModel()
+                {
+                    Selected = true,
+                    GameTime = game
+                });
+
+                SelectedTimes.Add(game);
+            }
+
+            PredictionModel = await PService.Fetch(Model.Season, Model.Week);
+            Projections = PredictionModel?.Filter(FilterSettings);
         }
     }
 
     private void PositionClick(PositionFilter filter)
     {
-        //Projections = Model.Filter(filter, SortSettings);
+        Projections = PredictionModel.FilterByStartTimes(SelectedTimes, filter);
         FilterSettings = filter;
-        //num = 1;
-        //hidden = 0;
+    }
+
+    private double GetITT(string teamAbbr)
+    {
+        double itt = 0.0;
+
+        if (Odds == null)
+        {
+            return (itt);
+        }
+
+        OddsData? game = Odds.GetData(teamAbbr);
+
+        if (game == null)
+        {
+            return (itt);
+        }
+
+        itt = (game.Home == teamAbbr) ? game.HomeITT : game.AwayITT;
+
+        return (itt);
+    }
+
+    private void StartTimeClicked(GameTimeCheckboxModel cb)
+    {
+        cb.Selected = !cb.Selected;
+        SelectedTimes = CheckboxModels.Where(c => c.Selected).Select(c => c.GameTime).ToList();
+
+        Projections = PredictionModel.FilterByStartTimes(SelectedTimes, FilterSettings);
+
+        Console.WriteLine($"checkbox {cb.GameTime.Id}: {cb.Selected}");
+    }
+
+    private class GameTimeCheckboxModel
+    {
+        public bool Selected { get; set; }
+        public StartTimes GameTime { get; set; }
     }
 }
 

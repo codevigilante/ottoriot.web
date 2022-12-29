@@ -82,6 +82,15 @@ namespace models
 
             return (played);
         }
+
+        public List<PredictionData> FilterByStartTimes(List<StartTimes> startTimes, PositionFilter position, SortBy sort = SortBy.FP)
+        {
+            List<PredictionData> data = Filter(position, sort);
+
+            data = data.Where(d => startTimes.SingleOrDefault(t => t.Start == d.GameTime) != null).ToList();
+
+            return (data);
+        }
     }
 }
 

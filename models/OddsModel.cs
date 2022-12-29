@@ -14,6 +14,14 @@ namespace models
         public DateTime GameTime { get; set; }
     }
 
+    public class StartTimes
+    {
+        public int Id { get; set; }
+        public DateTime Start { get; set; }
+        public int NumGames { get; set; }
+        public List<string> TeamAbbrs { get; set; } = new List<string>();
+    }
+
 	public class OddsModel
 	{
         public int Season { get; set; }
@@ -29,6 +37,45 @@ namespace models
         public List<OddsData> SortByDate()
         {
             return (Games.OrderBy(g => g.GameTime).ToList());
+        }
+
+        public List<StartTimes> FilterStartTimes()
+        {
+            List<StartTimes> startTimes = new List<StartTimes>();
+            List<OddsData> gamesByTime = SortByDate();
+            StartTimes? current = null;
+            int id = 1;
+
+            foreach(OddsData game in gamesByTime)
+            {
+                if (current == null || current.Start != game.GameTime)
+                {
+                    current = new StartTimes()
+                    {
+                        Id = id++,
+                        Start = game.GameTime,
+                        NumGames = 1,
+                        TeamAbbrs = new List<string>() { game.Home, game.Away }
+                    };
+
+                    startTimes.Add(current);
+                }
+                else
+                {
+                    current.NumGames += 1;
+                    current.TeamAbbrs.Add(game.Home);
+                    current.TeamAbbrs.Add(game.Away);
+                }
+            }
+
+            return (startTimes);
+        }
+
+        public OddsData? GetData(string teamAbbr)
+        {
+            OddsData? game = Games.SingleOrDefault(g => g.Home == teamAbbr || g.Away == teamAbbr);
+
+            return (game);
         }
 	}
 }

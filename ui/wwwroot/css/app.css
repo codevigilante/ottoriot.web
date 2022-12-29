@@ -28,6 +28,10 @@ a {
         background-color:none;
     }
 
+    [role=button].smaller {
+        padding:0.30rem;
+    }
+
 .brand {
     font-family:Courier New, Courier, monospace;
 }
@@ -40,12 +44,14 @@ a {
     text-align:center;
 }
 
-label.success {
+label.success,
+span.success {
     background-color: #b9fabe;
     padding: 5px;
 }
 
-label.error {
+label.error,
+span.error {
     background-color: #fab9b9;
     padding: 5px;
 }
