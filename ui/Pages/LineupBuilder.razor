@@ -1,22 +1,144 @@
 ﻿@page "/lineup-optimizer"
 @inject MetaService Meta
+@inject OddsService OService
 
-<div class="container grid-lg">
-    <h1><small>lineup optimizer</small></h1>
+@if (Model != null)
+{
+    <Headline Title="lineup optimizer" Season="@Model.Season" Week="@Model.Week" />
 
-    @if (MetaData != null)
+    @if (Games != null)
     {
-        <small class="chip">current: @MetaData.Season week @MetaData.Week</small>
+        <div class="grid">
+            <div>
+                <details role="list">
+                    <summary aria-haspopup="listbox">games</summary>
+                    <ul role="listbox">
+                        @foreach (OddsData o in Games)
+                        {
+                            @if (o.GameTime >= DateTime.Now)
+                            {
+                                <li>
+                                    <label>
+                                        <input type="checkbox" checked>
+                                        @o.Home v @o.Away (@o.GameTime.ToString("ddd, HH:mm"))
+                                    </label>
+                                </li>
+                            }
+                        }
+                    </ul>
+                </details>
+                <nav aria-label="breadcrumb">
+                    <ul>
+                        <li><a href="" class="@(FilterSettings == PositionFilter.QB ? "selected" : string.Empty)" @onclick="() => PositionClick(PositionFilter.QB)" @onclick:preventDefault>QB</a></li>
+                        <li><a href="" class="@(FilterSettings == PositionFilter.RB ? "selected" : string.Empty)" @onclick="() => PositionClick(PositionFilter.RB)" @onclick:preventDefault>RB</a></li>
+                        <li><a href="" class="@(FilterSettings == PositionFilter.WR ? "selected" : string.Empty)" @onclick="() => PositionClick(PositionFilter.WR)" @onclick:preventDefault>WR</a></li>
+                        <li><a href="" class="@(FilterSettings == PositionFilter.TE ? "selected" : string.Empty)" @onclick="() => PositionClick(PositionFilter.TE)" @onclick:preventDefault>TE</a></li>
+                        <li><a href="" class="@(FilterSettings == PositionFilter.DST ? "selected" : string.Empty)" @onclick="() => PositionClick(PositionFilter.DST)" @onclick:preventDefault>DST</a></li>
+                        <li><a href="" class="@(FilterSettings == PositionFilter.FLEX ? "selected" : string.Empty)" @onclick="() => PositionClick(PositionFilter.FLEX)" @onclick:preventDefault>FLEX</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div>
+                <table class="small-txt">
+                    <thead>
+                        <tr>
+                            <th><small>slot</small></th>
+                            <th><small>player</small></th>
+                            <th><small>$$</small></th>
+                            <th><small>fp</small></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>QB</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>RB</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>RB</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>WR</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>WR</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>WR</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>TE</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>FLEX</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>DST</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button class="contrast">optimize</button>
+            </div>
+        </div>
     }
-</div>
+}
+else
+{
+    <a href="#" aria-busy="true">grinding...</a>
+}
 
 @code
 {
-    private MetaModel MetaData = null;
+    private MetaModel? Model = null;
+    private OddsModel? Odds = null;
+    private List<OddsData> Games = null;
+    private PositionFilter FilterSettings = PositionFilter.QB;
 
     protected override async Task OnInitializedAsync()
     {
-        MetaData = await Meta.Fetch();
+        Model = await Meta.Fetch();
+
+        if (Model != null)
+        {
+            Odds = await OService.Fetch(Model.Season, Model.Week);
+            Games = Odds?.SortByDate();
+        }
+    }
+
+    private void PositionClick(PositionFilter filter)
+    {
+        //Projections = Model.Filter(filter, SortSettings);
+        FilterSettings = filter;
+        //num = 1;
+        //hidden = 0;
     }
 }
 

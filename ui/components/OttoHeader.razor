@@ -6,34 +6,38 @@
             <li><strong><a href="/" class="brand">ottoriot</a></strong></li>
         </ul>
         <ul>
-            <li>
-                <details role="list" dir="rtl" open="@IsOpen">
-                    <summary aria-haspopup="listbox" role="button" class="contrast">
-                        hello
-                    </summary>
-                    <ul role="listbox">
-                        <li><a @onclick="ProjectionsClick">projections</a></li>
-                        <li><a @onclick="OddsCLick">odds</a></li>
-                    </ul>
-                </details>
+            <li role="list" dir="rtl">
+                <a href="#" aria-haspopup="listbox">metrics</a>
+                <ul role="listbox">
+                    <li><a @onclick="ProjectionsClick">projections</a></li>
+                    <li><a @onclick="OddsCLick">odds</a></li>
+                </ul>
+            </li>
+            <li role="list" dir="rtl">
+                <a href="#" aria-haspopup="listbox">tools</a>
+                <ul role="listbox">
+                    <li><a @onclick="LineupClick">lineup optimizer</a></li>
+                </ul>
             </li>
         </ul>
     </nav>
 </header>
 
 @code {
-    private bool IsOpen { get; set; } = false;
 
     private void ProjectionsClick()
     {
-        IsOpen = false;
         UriHelper.NavigateTo("projections");
     }
 
     private void OddsCLick()
     {
-        IsOpen = false;
         UriHelper.NavigateTo("game-odds");
     }
+
+    private void LineupClick()
+{
+        UriHelper.NavigateTo("lineup-optimizer");
+}
 }
 

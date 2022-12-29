@@ -1,0 +1,20 @@
+﻿<hgroup>
+    <h1>@Title</h1>
+    <h3>@Season &rarr; @Week</h3>
+</hgroup>
+
+@code {
+    [Parameter]
+    public string? Title { get; set; }
+    [Parameter]
+    public int Season { get; set; }
+    [Parameter]
+    public int Week { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Title = Title ?? "hello";
+    }
+
+}
+
