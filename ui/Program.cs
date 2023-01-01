@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using ui;
-using ui.services.meta;
-using ui.services.predictions;
-using ui.services.odds;
+using services.meta;
+using services.predictions;
+using services.odds;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");

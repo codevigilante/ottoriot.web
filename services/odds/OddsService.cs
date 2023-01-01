@@ -1,8 +1,8 @@
 ﻿using System;
-using ui.services.predictions;
+using services.predictions;
 using models;
 
-namespace ui.services.odds
+namespace services.odds
 {
 	public class OddsService : ServiceBase<OddsModel>
 	{

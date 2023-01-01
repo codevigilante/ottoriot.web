@@ -1,7 +1,7 @@
 ﻿using System;
 using models;
 
-namespace ui.services.meta
+namespace services.meta
 {
 	public class MetaService : ServiceBase<MetaModel>
 	{

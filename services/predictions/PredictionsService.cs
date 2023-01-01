@@ -1,7 +1,7 @@
 ﻿using System;
 using models;
 
-namespace ui.services.predictions
+namespace services.predictions
 {
 	public class PredictionsService : ServiceBase<PredictionModel>
 	{

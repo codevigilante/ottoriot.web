@@ -22,19 +22,16 @@
     <None Remove="components\" />
     <None Remove="services\" />
     <None Remove="Newtonsoft.Json" />
-    <None Remove="services\predictions\" />
-    <None Remove="services\odds\" />
-    <None Remove="services\meta\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="components\" />
     <Folder Include="services\" />
-    <Folder Include="services\predictions\" />
-    <Folder Include="services\odds\" />
-    <Folder Include="services\meta\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\models\models.csproj">
+      <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
+    </ProjectReference>
+    <ProjectReference Include="..\apps\apps.csproj">
       <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
     </ProjectReference>
   </ItemGroup>

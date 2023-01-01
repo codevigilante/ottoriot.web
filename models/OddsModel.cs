@@ -14,14 +14,6 @@ namespace models
         public DateTime GameTime { get; set; }
     }
 
-    public class StartTimes
-    {
-        public int Id { get; set; }
-        public DateTime Start { get; set; }
-        public int NumGames { get; set; }
-        public List<string> TeamAbbrs { get; set; } = new List<string>();
-    }
-
 	public class OddsModel
 	{
         public int Season { get; set; }
@@ -39,23 +31,29 @@ namespace models
             return (Games.OrderBy(g => g.GameTime).ToList());
         }
 
-        public List<StartTimes> FilterStartTimes()
+        public StartTimes FilterStartTimes(bool excludePastGames = true)
         {
-            List<StartTimes> startTimes = new List<StartTimes>();
+            StartTimes startTimes = new StartTimes();
             List<OddsData> gamesByTime = SortByDate();
-            StartTimes? current = null;
+            StartTime? current = null;
             int id = 1;
 
             foreach(OddsData game in gamesByTime)
             {
+                if (excludePastGames && game.GameTime < DateTime.Now)
+                {
+                    continue;
+                }
+
                 if (current == null || current.Start != game.GameTime)
                 {
-                    current = new StartTimes()
+                    current = new StartTime()
                     {
                         Id = id++,
                         Start = game.GameTime,
                         NumGames = 1,
-                        TeamAbbrs = new List<string>() { game.Home, game.Away }
+                        TeamAbbrs = new List<string>() { game.Home, game.Away },
+                        Selected = true
                     };
 
                     startTimes.Add(current);

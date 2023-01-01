@@ -1,34 +1,29 @@
 ﻿using System;
 using models;
+using services.predictions;
+using services.odds;
+using apps.lineup.generators;
 
 namespace apps.lineup
 {
+	public enum GeneratorVersion { RiotGenV0 }
+
 	public class LineupBuilder
 	{
-        public int NumLineups { get; set; } = 100;
-
 		public LineupBuilder()
 		{
 		}
 
-        /// <summary>
-        /// Accepts a pool of players for a slate and a budget and generates a sorted list of
-        /// single game lineups that fit within the budget.
-        /// </summary>
-        /// <param name="playerPool"></param>
-        /// <param name="budget"></param>
-        /// <returns>Up to 100 possible combinations.</returns>
-        /*public List<SingleGameModel> BuildSingleGame(List<PredictionData> playerPool, int budget = 120)
+		public static ILineupGenerator Create(GeneratorVersion version = GeneratorVersion.RiotGenV0)
 		{
-            List<PredictionData> filtered = playerPool.Where(p => p.FP >= 5.0).OrderByDescending(p => p.Value).ToList();
-            int count = 0;
-            bool stillViable = true;
-
-            while (count < NumLineups)
-            {
-
-            }
-		}*/
+			switch(version)
+			{
+				case GeneratorVersion.RiotGenV0:
+					return (new RiotGenV0());
+				default:
+					throw new Exception("try again, idiot");
+			}
+		}
 	}
 }
 

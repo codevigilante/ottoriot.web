@@ -4,8 +4,6 @@ namespace models
 {
     public enum SortBy { FP, Value, Salary, Matchup }
     public enum PositionFilter { QB, RB, WR, TE, DST, FLEX }
-    public enum GameDayFilter { All, Thu, Sat, Sun, Mon }
-    public enum TimeSlotFilter { All, AM, Noon, PM, Late }
 
     public class AvailableSlate
     {
@@ -83,7 +81,7 @@ namespace models
             return (played);
         }
 
-        public List<PredictionData> FilterByStartTimes(List<StartTimes> startTimes, PositionFilter position, SortBy sort = SortBy.FP)
+        public List<PredictionData> FilterByStartTimes(StartTimes startTimes, PositionFilter position, SortBy sort = SortBy.FP)
         {
             List<PredictionData> data = Filter(position, sort);
 

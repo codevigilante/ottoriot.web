@@ -7,15 +7,20 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="lineup\" />
-    <None Remove="lineup\generators\" />
+    <None Remove="meta\" />
+    <None Remove="odds\" />
+    <None Remove="predictions\" />
+    <None Remove="Newtonsoft.Json" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="lineup\" />
-    <Folder Include="lineup\generators\" />
+    <Folder Include="meta\" />
+    <Folder Include="odds\" />
+    <Folder Include="predictions\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\models\models.csproj" />
-    <ProjectReference Include="..\services\services.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
   </ItemGroup>
 </Project>

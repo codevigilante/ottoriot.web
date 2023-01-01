@@ -7,28 +7,37 @@
 {
     <Headline Title="lineup optimizer" Season="@Model.Season" Week="@Model.Week" />
 
-    @if (CheckboxModels != null)
+    @if(!String.IsNullOrWhiteSpace(Error))
     {
-        <div class="grid">
-            <div>
+        <p class="text-error">@Error</p>
+    }
+
+    @if (Pool != null)
+    {
+        <details open>
+            <summary role="button" class="secondary">player pool</summary>
+            <section id="lineup-options">
                 <details role="list">
                     <summary aria-haspopup="listbox">start times</summary>
                     <ul role="listbox">
-                        @foreach (GameTimeCheckboxModel cb in CheckboxModels)
+                        @foreach (StartTime start in Pool.Slates)
                         {
-                            @if (cb.GameTime.Start >= DateTime.Now)
-                            {
-                                <li>
-                                    <label>
-                                        <input type="checkbox" checked="@cb.Selected" @onchange="() => StartTimeClicked(cb)">
-                                        @cb.GameTime.Start.ToString("ddd, HH:mm")) @cb.GameTime.NumGames @(cb.GameTime.NumGames > 1 ? "games" : "game")
-                                    </label>
-                                </li>
-                            }
+                            <li>
+                                <label>
+                                    <input type="checkbox" checked="@start.Selected" @onchange="() => Pool.ToggleStartTime(start)">
+                                    @start.Start.ToString("ddd, HH:mm")) @start.NumGames @(start.NumGames > 1 ? "games" : "game")
+                                </label>
+                            </li>
                         }
                     </ul>
                 </details>
-                <small>@SelectedTimes.Sum(g => g.NumGames) games selected</small>
+                <small>@Pool.Slates.NumGamesSelected games selected</small>
+                <p>
+                    <a href="#" role="button" @onclick:preventDefault @onclick="OnGenerateClick">generate</a>
+                </p>                
+            </section>
+
+            <section>
                 <nav aria-label="breadcrumb">
                     <ul>
                         <li><a href="" class="@(FilterSettings == PositionFilter.QB ? "selected" : string.Empty)" @onclick="() => PositionClick(PositionFilter.QB)" @onclick:preventDefault>QB</a></li>
@@ -39,197 +48,81 @@
                         <li><a href="" class="@(FilterSettings == PositionFilter.FLEX ? "selected" : string.Empty)" @onclick="() => PositionClick(PositionFilter.FLEX)" @onclick:preventDefault>FLEX</a></li>
                     </ul>
                 </nav>
-            </div>
-            <div>
-                @if (SelectedTimes.Sum(t => t.NumGames) > 1)
-                {
-                    <table class="small-txt">
-                        <thead>
-                            <tr>
-                                <th><small>slot</small></th>
-                                <th><small>player</small></th>
-                                <th><small>$$</small></th>
-                                <th><small>fp</small></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>QB</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td>RB</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td>RB</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td>WR</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td>WR</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td>WR</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td>TE</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td>FLEX</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td>DST</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <th></th>
-                                <th></th>
-                                <th></th>
-                                <th></th>
-                            </tr>
-                        </tfoot>
-                    </table>
-                }
-                else if (SelectedTimes.Sum(t => t.NumGames) == 1)
-                {
-                    <table class="small-txt">
-                        <thead>
-                            <tr>
-                                <th><small>slot</small></th>
-                                <th><small>player</small></th>
-                                <th><small>$$</small></th>
-                                <th><small>fp</small></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>SUPER</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td>FLEX</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td>FLEX</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td>FLEX</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td>FLEX</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <th></th>
-                                <th></th>
-                                <th></th>
-                                <th></th>
-                            </tr>
-                        </tfoot>
-                    </table>
-                }
-                <a href="#" role="button" class="contrast">optimize</a>
-                <a href="#" role="button" class="contrast outline">save</a>
-            </div>
-        </div>
-    }
 
-    @if(Projections != null)
-    {
-        <hr/>
-        <figure>
-            <table>
-                <thead>
-                    <tr>
-                        <th><small>act</small></th>
-                        <th><small>player</small></th>
-                        <th><small>itt</small></th>
-                        <th><small>fp</small></th>
-                        <th><small>$$</small></th>
-                        <th><small>val</small></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach(PredictionData data in Projections)
-                    {
-                        <tr>
-                            <td>
-                                <a href="#" class="contrast smaller" role="button" @onclick:preventDefault>+</a>
-                                <a href="#" class="contrast smaller" role="button" @onclick:preventDefault>-</a>
-                            </td>
-                            <td>
-                                @data.Name <br />
-                                <small>@data.Position &bull; @data.Team &bull; <span class="@(data.Matchup > 0 ? "success" : "error")">@data.Matchup</span> &bull; @data.GameTime.ToString("ddd, HH:mm")</small>
-                            </td>
-                            <td>@GetITT(data.Team)</td>
-                            <td>@data.FP</td>
-                            <td>@data.Salary</td>
-                            <td>@data.Value</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </figure>
+                @if (Players != null)
+                {
+                    <figure>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th><small>act</small></th>
+                                    <th><small>player</small></th>
+                                    <th><small>fp</small></th>
+                                    <th><small>$$</small></th>
+                                    <th><small>m/u</small></th>
+                                    <th><small>itt</small></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (PlayerData data in Players)
+                                {
+                                    @if (data.Available)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <a href="#" class="contrast smaller" role="button" @onclick:preventDefault>+</a>
+                                                <a href="#" class="contrast smaller" role="button" @onclick:preventDefault>x</a>
+                                            </td>
+                                            <td>
+                                                @data.Projection.Name <br />
+                                                <small>@data.Projection.Team</small>
+                                                @if (!String.IsNullOrWhiteSpace(data.Projection.Status))
+                                                    {
+                                                    <small> &bull; <strong class="text-error">@data.Projection.Status</strong></small>
+                                                    }
+                                            </td>
+                                            <td>@data.Projection.FP</td>
+                                            <td>$@data.Projection.Salary</td>
+                                            <td>
+                                                <small>
+                                                    @if (data.Projection.Matchup > 0)
+                                                    {
+                                                        <label class="success">@data.Projection.Matchup</label>
+                                                        }
+                                                        else
+                                                        {
+                                                        <label class="error">@data.Projection.Matchup</label>
+                                                        }
+                                                </small>
+                                            </td>
+                                            <td><small>@data.ITT</small></td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </figure>
+                }
+                else
+                {
+                    <a href="#" aria-busy="true">grinding...</a>
+                }
+            </section>
+        </details>
+        <details>
+            <summary role="button" class="secondary">lineups</summary>
+            <p>this is where lineups appear when generated</p>
+        </details>
     }
-}
-else
-{
-    <a href="#" aria-busy="true">grinding...</a>
 }
 
 @code
 {
     private MetaModel? Model = null;
-    private OddsModel? Odds = null;
-    private List<StartTimes>? GameTimes = null;
+    private IPlayerPool? Pool = null;
     private PositionFilter FilterSettings = PositionFilter.QB;
-    private PredictionModel? PredictionModel = null;
-    private List<PredictionData>? Projections = null;
-    private List<GameTimeCheckboxModel> CheckboxModels = null;
-    private List<StartTimes> SelectedTimes = new List<StartTimes>();
+    private List<PlayerData>? Players = null;
+    private string Error = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
@@ -237,67 +130,71 @@ else
 
         if (Model != null)
         {
-            Odds = await OService.Fetch(Model.Season, Model.Week);
-            GameTimes = Odds?.FilterStartTimes();
-            CheckboxModels = new List<GameTimeCheckboxModel>();
+            OddsModel? Odds = await OService.Fetch(Model.Season, Model.Week);
+            PredictionModel? Predictions = await PService.Fetch(Model.Season, Model.Week);
 
-            foreach(StartTimes game in GameTimes)
+            if (Odds == null || Predictions == null)
             {
-                CheckboxModels.Add(new GameTimeCheckboxModel()
-                {
-                    Selected = true,
-                    GameTime = game
-                });
+                Error = $"well, I'm having trouble getting data for you for {Model.Season}.{Model.Week}. Can you try again?";
 
-                SelectedTimes.Add(game);
+                return;
             }
 
-            PredictionModel = await PService.Fetch(Model.Season, Model.Week);
-            Projections = PredictionModel?.Filter(FilterSettings);
+            Pool = new PlayerPool(Odds, Predictions);
+            Players = Pool.Players;
+
+            PositionClick(FilterSettings);
         }
     }
 
     private void PositionClick(PositionFilter filter)
     {
-        Projections = PredictionModel.FilterByStartTimes(SelectedTimes, filter);
         FilterSettings = filter;
-    }
 
-    private double GetITT(string teamAbbr)
-    {
-        double itt = 0.0;
-
-        if (Odds == null)
+        if (Pool == null)
         {
-            return (itt);
+            return;
         }
 
-        OddsData? game = Odds.GetData(teamAbbr);
+        string filterString = FilterSettings.ToString().ToUpper();
 
-        if (game == null)
+        switch(FilterSettings)
         {
-            return (itt);
+            case PositionFilter.QB:
+            case PositionFilter.RB:
+            case PositionFilter.WR:
+            case PositionFilter.TE:
+            case PositionFilter.DST:
+                Players = Pool.Players.Where(p => p.Projection.Position == filterString).OrderByDescending(p => p.Projection.FP).ToList();
+                break;
+            case PositionFilter.FLEX:
+                Players = Pool.Players.Where(p => p.Projection.Position == "RB" || p.Projection.Position == "WR" || p.Projection.Position == "TE").OrderByDescending(p => p.Projection.FP).ToList();
+                break;
+            default:
+                Error = $"what are you doing? please stop.";
+                break;
         }
-
-        itt = (game.Home == teamAbbr) ? game.HomeITT : game.AwayITT;
-
-        return (itt);
     }
 
-    private void StartTimeClicked(GameTimeCheckboxModel cb)
+    private void OnGenerateClick()
     {
-        cb.Selected = !cb.Selected;
-        SelectedTimes = CheckboxModels.Where(c => c.Selected).Select(c => c.GameTime).ToList();
+        try
+        {
+            ILineupGenerator lineupGen = apps.lineup.LineupBuilder.Create();
+            ILineup lineup = lineupGen.Generate(Pool);
 
-        Projections = PredictionModel.FilterByStartTimes(SelectedTimes, FilterSettings);
+            Console.WriteLine("done generating:");
 
-        Console.WriteLine($"checkbox {cb.GameTime.Id}: {cb.Selected}");
-    }
+            foreach(PlayerData p in lineup.Players)
+            {
+                Console.WriteLine($"{p.Projection.Name} {p.Projection.Position} {p.Projection.FP}");
+            }
 
-    private class GameTimeCheckboxModel
-    {
-        public bool Selected { get; set; }
-        public StartTimes GameTime { get; set; }
+            Console.WriteLine($"{lineup.TotalSalary}, {lineup.TotalProjectedFP}");
+        }
+        catch(Exception ex)
+        {
+            Error = $"EXCEPTION: {ex.Message}";
+        }
     }
 }
-

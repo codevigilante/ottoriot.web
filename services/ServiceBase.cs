@@ -1,8 +1,8 @@
 ﻿using System;
 using Newtonsoft.Json;
-using ui.services.predictions;
+using services.predictions;
 
-namespace ui.services
+namespace services
 {
 	public class ServiceBase<T> where T : class
 	{
